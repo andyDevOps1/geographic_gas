@@ -1,0 +1,10 @@
+{
+  "/carburantes": {
+    "target": "https://sedeaplicaciones.minetur.gob.es",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/carburantes": "/ServiciosRESTCarburantes"
+    }
+  }
+}
