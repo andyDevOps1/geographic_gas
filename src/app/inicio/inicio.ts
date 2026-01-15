@@ -24,7 +24,7 @@ interface ApiStation {
 interface ApiResponse { ListaEESSPrecio?: ApiStation[]; }
 interface ApiProvincia { IDPovincia?: string; IDProvincia?: string; Provincia: string; }
 interface ApiProducto { IDProducto: string; NombreProducto: string; }
-interface FuelOption { id: string; label: string; }
+interface carburantes { id: string; label: string; }
 
 interface GasolineraView {
   empresa: string;
@@ -58,7 +58,7 @@ export class Inicio implements OnInit {
   numGas: number | string = 50;
   radioKm: number | string = 2;
 
-  fuelOptions: FuelOption[] = [];
+  fuelOptions: carburantes[] = [];
   fuelId = '';
 
   empresasTop: string[] = [
