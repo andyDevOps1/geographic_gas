@@ -87,7 +87,7 @@ export class Inicio implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.cargarCatalogoCombustibles();
-    this.forceRender();
+    this.forzarRender();
   }
 
   async obtenerDireccionYBuscar(): Promise<void> {
@@ -122,8 +122,8 @@ export class Inicio implements OnInit {
     if (lat == null || lon == null) { this.setUi({ error: 'No hay coordenadas. Revisa la dirección.' }); return; }
 
     const idProducto = this.fuelId || this.fuelOptions[0]?.id || '1';
-    const km = this.normalizeKm(this.radioKm);
-    const limit = this.normalizeLimit(this.numGas);
+    const km = this.normalizarKm(this.radioKm);
+    const limit = this.normalizarLimite(this.numGas);
 
     this.setUi({ info: `Buscando gasolineras en ${km} km...` });
 
@@ -137,7 +137,7 @@ export class Inicio implements OnInit {
       found.sort((a, b) => a.distanciaKm - b.distanciaKm);
       const finalList = limit ? found.slice(0, limit) : found;
 
-      this.markCheapest(finalList);
+      this.masBarata(finalList);
 
       const idx = finalList.findIndex(x => x.isCheapest);
       if (idx > 0) finalList.unshift(finalList.splice(idx, 1)[0]);
@@ -208,9 +208,9 @@ export class Inicio implements OnInit {
 
     if (provName) {
       const provincias = await this.getProvincias();
-      const target = this.cleanForMatch(String(provName));
+      const target = this.limpiarParaMatch(String(provName));
       const hit = provincias.find(p => {
-        const name = this.cleanForMatch(String(p.Provincia ?? ''));
+        const name = this.limpiarParaMatch(String(p.Provincia ?? ''));
         return name === target || name.includes(target) || target.includes(name);
       });
       if (hit) return String(hit.IDProvincia ?? hit.IDPovincia ?? '00').padStart(2, '0');
@@ -252,7 +252,7 @@ export class Inicio implements OnInit {
   }
 
   private filtrarPorDistancia(estaciones: ApiStation[], lat: number, lon: number, maxKm: number): GasolineraView[] {
-    const candidatos = this.filterByBoundingBox(estaciones, lat, lon, maxKm);
+    const candidatos = this.filtrarPorCajas(estaciones, lat, lon, maxKm);
     const filtraEmpresa = this.empresaSeleccionada && this.empresaSeleccionada !== 'TODAS';
     const out: GasolineraView[] = [];
 
@@ -261,10 +261,10 @@ export class Inicio implements OnInit {
       const lo = this.coord(e, ['Longitud (WGS84)','Longitud_x0020__x0028_WGS84_x0029_','Longitud']);
       if (!Number.isFinite(la) || !Number.isFinite(lo)) continue;
 
-      const d = this.haversineKm(lat, lon, la, lo);
+      const d = this.distancia(lat, lon, la, lo);
       if (d > maxKm) continue;
 
-      const empresa = this.normalizeBrand(String(e['Rótulo'] ?? ''));
+      const empresa = this.normalizarEmpresa(String(e['Rótulo'] ?? ''));
       if (filtraEmpresa && empresa !== this.empresaSeleccionada) continue;
 
       out.push({
@@ -276,7 +276,7 @@ export class Inicio implements OnInit {
         lat: la,
         lon: lo,
         distanciaKm: d,
-        precio: this.parsePrice(e['PrecioProducto']),
+        precio: this.parsePrecio(e['PrecioProducto']),
       });
     }
     return out;
@@ -290,7 +290,7 @@ export class Inicio implements OnInit {
     return NaN;
   }
 
-  private filterByBoundingBox(estaciones: ApiStation[], lat: number, lon: number, maxKm: number): ApiStation[] {
+  private filtrarPorCajas(estaciones: ApiStation[], lat: number, lon: number, maxKm: number): ApiStation[] {
     const latDelta = maxKm / 111;
     const lonDelta = maxKm / (111 * Math.cos((lat * Math.PI) / 180));
 
@@ -307,7 +307,7 @@ export class Inicio implements OnInit {
     return out;
   }
 
-  private markCheapest(list: GasolineraView[]): void {
+  private masBarata(list: GasolineraView[]): void {
     let best: GasolineraView | null = null;
     for (const x of list) {
       x.isCheapest = false;
@@ -317,14 +317,14 @@ export class Inicio implements OnInit {
     if (best) best.isCheapest = true;
   }
 
-  private normalizeLimit(v: unknown): number {
+  private normalizarLimite(v: unknown): number {
     const n = Math.trunc(Number(v));
     if (!Number.isFinite(n)) return 50;
     if (n <= 0) return 0;
     return Math.min(5000, n);
   }
 
-  private normalizeKm(v: unknown): number {
+  private normalizarKm(v: unknown): number {
     const n = Number(v);
     if (!Number.isFinite(n) || n <= 0) return 2;
     return Math.min(100, n);
@@ -337,12 +337,12 @@ export class Inicio implements OnInit {
     return Number.isFinite(n) ? n : NaN;
   }
 
-  private parsePrice(v: unknown): number | null {
+  private parsePrecio(v: unknown): number | null {
     const n = this.num(v);
     return Number.isFinite(n) && n > 0 ? n : null;
   }
 
-  private haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  private distancia(lat1: number, lon1: number, lat2: number, lon2: number): number {
     const R = 6371;
     const toRad = (x: number) => (x * Math.PI) / 180;
     const dLat = toRad(lat2 - lat1);
@@ -351,8 +351,8 @@ export class Inicio implements OnInit {
     return 2 * R * Math.asin(Math.sqrt(a));
   }
 
-  private normalizeBrand(rotuloRaw: string): string {
-    const s = this.cleanForMatch(rotuloRaw);
+  private normalizarEmpresa(rotuloRaw: string): string {
+    const s = this.limpiarParaMatch(rotuloRaw);
     const map: [string, string][] = [
       ['REPSOL','REPSOL'],['CEPSA','CEPSA'],['BP','BP'],['SHELL','SHELL'],['GALP','GALP'],['MOEVE','MOEVE'],
       ['AVIA','AVIA'],['PLENOIL','PLENOIL'],['PETROPRIX','PETROPRIX'],['BALLENOIL','BALLENOIL'],['Q8','Q8'],
@@ -362,7 +362,7 @@ export class Inicio implements OnInit {
     return rotuloRaw?.trim() ? rotuloRaw.trim() : 'SIN MARCA';
   }
 
-  private cleanForMatch(str: string): string {
+  private limpiarParaMatch(str: string): string {
     return String(str ?? '')
       .toUpperCase()
       .normalize('NFD')
@@ -375,7 +375,7 @@ export class Inicio implements OnInit {
   private ui(fn: () => void): void {
     this.zone.run(() => {
       fn();
-      this.forceRender();
+      this.forzarRender();
     });
   }
 
@@ -383,7 +383,7 @@ export class Inicio implements OnInit {
     this.ui(() => Object.assign(this, patch));
   }
 
-  private forceRender(): void {
+  private forzarRender(): void {
     try { this.cdr.detectChanges(); } catch {}
   }
 }
