@@ -36,9 +36,9 @@
         <p>Carburante</p>
 
         <!-- Desplegable de carburantes -->
-        <select [(ngModel)]="fuelId">
+        <select [(ngModel)]="IdCarburante">
           <!-- *ngFor recorre la lista de carburantes y crea una opción para cada uno -->
-          <option *ngFor="let f of fuelOptions" [value]="f.id">
+          <option *ngFor="let f of carburantes" [value]="f.id">
             {{ f.label }}
           </option>
         </select>
@@ -86,7 +86,7 @@
     <!-- *ngFor recorre la lista de gasolineras -->
     <div *ngFor="let g of results">
       <!-- Marcar gasolinera más barata -->
-      <div *ngIf="g.isCheapest" style="font-weight:700">¡Más barata!</div>
+      <div *ngIf="g.barata" style="font-weight:700">¡Más barata!</div>
 
       <!-- Datos de la gasolinera -->
       <b>{{ g.empresa }}</b> · {{ g.distanciaKm | number:'1.1-1' }} km<br />
@@ -108,3 +108,4 @@
     </div>
   </div>
 </div>
+
