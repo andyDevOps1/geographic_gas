@@ -174,7 +174,7 @@ export class Inicio implements OnInit {
   // Descarga los carburantes y elige uno por defecto
   private async cargarCatalogoCombustibles(): Promise<void> {
     try {
-      const resp = await fetch('/carburantes/PreciosCarburantes/Listados/ProductosPetroliferos/', {
+      const resp = await fetch('/api/carburantes/PreciosCarburantes/Listados/ProductosPetroliferos/', {
         headers: { Accept: 'application/json' },
       });
 
@@ -256,7 +256,7 @@ export class Inicio implements OnInit {
   private async getProvincias(): Promise<ApiProvincia[]> {
     if (this.provinciasCache) return this.provinciasCache;
 
-    const resp = await fetch('/carburantes/PreciosCarburantes/Listados/Provincias/', {
+    const resp = await fetch('/api/carburantes/PreciosCarburantes/Listados/Provincias/', {
       headers: { Accept: 'application/json' },
     });
 
@@ -270,7 +270,7 @@ export class Inicio implements OnInit {
     const cached = this.estacionesCache.get(key);
     if (cached) return cached;
 
-    const url = `/carburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvinciaProducto/${idProvincia}/${idProducto}`;
+    const url = `/api/carburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvinciaProducto/${idProvincia}/${idProducto}`;
     const resp = await fetch(url, { headers: { Accept: 'application/json' } });
 
     const data = (await resp.json()) as ApiResponse;
