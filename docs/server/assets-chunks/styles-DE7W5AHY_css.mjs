@@ -1,0 +1,2 @@
+export default `html,body{height:100%;margin:0}body{display:flex;flex-direction:column}header{background:linear-gradient(90deg,#0e0d0d,#e92525);display:flex;justify-content:center;align-items:center;font-family:Poppins,sans-serif;font-size:36px;font-weight:700;color:#fff;padding:40px 20px;text-align:center}.header-content{display:flex;align-items:center;gap:80px}footer{background-color:#000;padding:10px;text-align:center;font-family:Arial,sans-serif;color:#b8b8b8;justify-content:center;align-items:center;font-weight:700}.footer .p3{color:#bb1212}
+`;
