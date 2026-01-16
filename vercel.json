@@ -1,8 +1,15 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/carburantes/:path*",
-      "destination": "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/:path*"
+      "src": "^/carburantes/(.*)$",
+      "dest": "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
-}
+} 
