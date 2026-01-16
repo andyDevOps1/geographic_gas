@@ -1,19 +1,7 @@
 {
   "routes": [
-    {
-      "src": "^/api/(.*)$",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "^/carburantes/(.*)$",
-      "dest": "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/$1"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
+    { "src": "^/api/(.*)$", "dest": "/api/$1" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/" }
   ]
 }
