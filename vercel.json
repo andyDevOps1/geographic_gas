@@ -1,6 +1,10 @@
 {
   "routes": [
     {
+      "src": "^/api/(.*)$",
+      "dest": "/api/$1"
+    },
+    {
       "src": "^/carburantes/(.*)$",
       "dest": "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/$1"
     },
@@ -12,4 +16,4 @@
       "dest": "/"
     }
   ]
-} 
+}
