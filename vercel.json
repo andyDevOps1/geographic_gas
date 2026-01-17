@@ -1,5 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/carburantes/(.*)", "destination": "/api/carburantes/$1" }
+  "routes": [
+    { "src": "^/carburantes/(.*)$", "dest": "/api/carburantes?path=$1" },
+    { "src": "^/api/carburantes/(.*)$", "dest": "/api/carburantes?path=$1" }
   ]
 }
