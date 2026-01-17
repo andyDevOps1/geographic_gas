@@ -197,7 +197,7 @@ export class Inicio implements OnInit {
     } catch {
       // Si el endpoint falla
       this.ui(() => {
-        this.carburantes = [{ id: '1', label: 'Producto 1' }];
+        this.carburantes = [{ id: '1', label: '' }];
         this.IdCarburante = this.IdCarburante || '1';
       });
     }
